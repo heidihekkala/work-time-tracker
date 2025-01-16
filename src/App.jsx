@@ -5,7 +5,7 @@ import './App.css';
 function App() {
   return (
     <div>
-      <h2>Työajan seuranta:</h2>
+      <h2>Oma projekti</h2>
       <TyöAjanSeuranta />
     </div>
   );
