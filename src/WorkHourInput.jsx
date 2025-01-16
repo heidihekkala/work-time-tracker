@@ -6,7 +6,7 @@ function TyöAjanSeuranta() {
       <div>
         <h2>Työajan seuranta:</h2>
         <form>
-          <label for="työnantaja">Valitse työnantaja:</label>
+          <label htmlFor="työnantaja">Valitse työnantaja:</label>
             <select id="työnantaja" name="työnantaja">
               <option value="A">Työnantaja A</option>
               <option value="B">Työnantaja B</option>
