@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from 'react-hook-form';
 import styled from "styled-components";
 import Button from '@mui/material/Button';
+import DateTimePicker from 'react-datetime-picker';
 
 const Container = styled.div`
   font-family: Arial, sans-serif;
@@ -79,7 +80,6 @@ function TimeTracker() {
           <label>Aloitusaika:
             <Input 
               type="time" 
-              step="600"
               value={startTime} 
               onChange={handleStartTimeChange} 
             />
