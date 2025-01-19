@@ -76,11 +76,13 @@ function TimeTracker() {
     const startDate = new Date(startTime);
     const endDate = new Date(endTime);
 
-    if (!startDate || !endDate) {
+    if (!startTime || !endTime || isNaN(startDate) || isNaN(endDate)) {
       setError("Täytä molemmat ajat.");
       setWorkHours(null);
       return;
-    } 
+    } else {
+      setError("");
+    }
 
     const timeDifference = endDate - startDate;
 
@@ -94,7 +96,7 @@ function TimeTracker() {
     // Muutetaan millisekunnit tunneiksi ja minuuteiksi
     const totalHours = timeDifference / (1000 * 60 * 60);
     
-    setWorkHours(`Tunnit laskettu! (${totalHours.toFixed(2)} h)`);
+    setWorkHours(totalHours.toFixed(2));
   }
 
   return (
@@ -126,7 +128,7 @@ function TimeTracker() {
             backgroundColor: 'rgb(8, 100, 95)'}}>Lisää tunnit</Button>
         </form>
         {error && <ErrorMessage>{error}</ErrorMessage>}
-        {workHours !== null && !error && <Result>{workHours}</Result>}
+        {workHours !== null && !error && <Result>Tunnit lisätty! ({workHours} h)</Result>}
       </TimeEntryContainer>
     </Container>
   );
