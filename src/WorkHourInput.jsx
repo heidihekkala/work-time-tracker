@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import styled from "styled-components";
 import Button from '@mui/material/Button';
 
+
 const Container = styled.div`
   font-family: Arial, sans-serif;
   text-align: center;
@@ -52,18 +53,49 @@ const Select = styled.select`
   box-sizing: border-box;
 `;
 
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 0.9em;
+  margin-top: -0.5em;
+`;
+
+const Result = styled.p`
+  font-size: 1.2em;
+  color: #333;
+  margin-top: 0.5em;
+`;
+
 function TimeTracker() {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  //const [workHours, setWorkHours] = useState(null);
+  const [workHours, setWorkHours] = useState(null);
+  const [error, setError] = useState("");
+  //const [timeEntries, setTimeEntries] = useState([]);
 
-  const handleStartTimeChange = (e) => {
-    setStartTime(e.target.value);
-  };
+  const calculateTime = () => {
+    const startDate = new Date(startTime);
+    const endDate = new Date(endTime);
 
-  const handleEndTimeChange = (e) => {
-    setEndTime(e.target.value);
-  };
+    if (!startDate || !endDate) {
+      setError("Täytä molemmat ajat.");
+      setWorkHours(null);
+      return;
+    } 
+
+    const timeDifference = endDate - startDate;
+
+    if (timeDifference < 0) {
+      setError("Lopetusaika ei voi olla ennen aloitusaikaa.");
+      setWorkHours(null);
+      return;
+    }
+
+    // Muutetaan millisekunnit tunneiksi ja minuuteiksi
+    const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+
+    setWorkHours(`Työtunnit: ${hours} tuntia ja ${minutes} minuuttia`);
+  }
 
   return (
     <Container>
@@ -79,23 +111,27 @@ function TimeTracker() {
           <label>Aloitusaika:
             <Input 
               type="datetime-local" 
-              value={startTime} 
-              onChange={handleStartTimeChange} 
+              value={startTime}  
+              onChange={(event) => setStartTime(event.target.value)}
             />
           </label>
           <label>Lopetusaika:
             <Input 
               type="datetime-local" 
-              value={endTime} 
-              onChange={handleEndTimeChange} 
+              value={endTime}  
+              onChange={(event) => setEndTime(event.target.value)}
             />
           </label>
+          <Button variant="contained" size="large" onClick={calculateTime} style={{
+            backgroundColor: 'rgb(8, 100, 95)'}}>Lisää tunnit</Button>
         </form>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        {workHours !== null && !error && <Result>{workHours}</Result>}
       </TimeEntryContainer>
-      <Button variant="contained" size="large" style={{
-        backgroundColor: 'rgb(8, 100, 95)'}}>Lisää tunnit</Button>
     </Container>
-  );}
-  
-  export default TimeTracker;
+  );
+}
+
+
+export default TimeTracker;
   
