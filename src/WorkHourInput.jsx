@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useForm } from 'react-hook-form';
 import styled from "styled-components";
 import Button from '@mui/material/Button';
-//import AjanValinta from "./SetDateTime";
 
 const Container = styled.div`
   font-family: Arial, sans-serif;
@@ -36,7 +35,7 @@ const Input = styled.input`
   text-align:center;
   margin-bottom: 1em;
   padding: 0.75em;
-  font-size: 1em;
+  font-size: 1.3em;
   border-radius: 5px;
   border: 1px solid #ddd;
   box-sizing: border-box;
@@ -79,7 +78,7 @@ function TimeTracker() {
           </label>
           <label>Aloitusaika:
             <Input 
-              type="time" 
+              type="datetime-local" 
               value={startTime} 
               onChange={handleStartTimeChange} 
             />
