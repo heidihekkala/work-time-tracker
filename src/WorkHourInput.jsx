@@ -87,14 +87,14 @@ function TimeTracker() {
     if (timeDifference < 0) {
       setError("Lopetusaika ei voi olla ennen aloitusaikaa.");
       setWorkHours(null);
-      return;
+    } else {
+      setError("");
     }
 
     // Muutetaan millisekunnit tunneiksi ja minuuteiksi
-    const hours = Math.floor(timeDifference / (1000 * 60 * 60));
-    const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-
-    setWorkHours(`Työtunnit: ${hours} tuntia ja ${minutes} minuuttia`);
+    const totalHours = timeDifference / (1000 * 60 * 60);
+    
+    setWorkHours(`Tunnit laskettu! (${totalHours.toFixed(2)} h)`);
   }
 
   return (
