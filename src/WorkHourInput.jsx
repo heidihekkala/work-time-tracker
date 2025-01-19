@@ -79,6 +79,7 @@ function TimeTracker() {
           <label>Aloitusaika:
             <Input 
               type="time" 
+              step="600"
               value={startTime} 
               onChange={handleStartTimeChange} 
             />
