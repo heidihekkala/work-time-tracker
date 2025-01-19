@@ -86,7 +86,7 @@ function TimeTracker() {
           </label>
           <label>Lopetusaika:
             <Input 
-              type="time" 
+              type="datetime-local" 
               value={endTime} 
               onChange={handleEndTimeChange} 
             />
