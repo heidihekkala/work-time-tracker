@@ -1,12 +1,9 @@
 //import { useState } from 'react'
-import TyöAjanSeuranta from './WorkHourInput'
+import TimeTracker from './WorkHourInput'
 
 function App() {
   return (
-    <div>
-      <h2>Oma projekti</h2>
-      <TyöAjanSeuranta />
-    </div>
+    <TimeTracker />
   );
 }
 
