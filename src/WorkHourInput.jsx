@@ -1,8 +1,6 @@
-import React, { useState } from "react";
-import { useForm } from 'react-hook-form';
+import { useState } from "react";
 import styled from "styled-components";
 import Button from '@mui/material/Button';
-
 
 const Container = styled.div`
   font-family: Arial, sans-serif;
@@ -33,7 +31,7 @@ const TimeEntryContainer = styled.div`
 
 const Input = styled.input`
   width: 80%;
-  text-align:center;
+  text-align: center;
   margin-bottom: 1em;
   padding: 0.75em;
   font-size: 1.3em;
@@ -44,7 +42,7 @@ const Input = styled.input`
 
 const Select = styled.select`
   width: 80%;
-  text-align:center;
+  text-align: center;
   margin-bottom: 1em;
   padding: 0.75em;
   font-size: 1em;
@@ -59,81 +57,169 @@ const ErrorMessage = styled.p`
   margin-top: -0.5em;
 `;
 
-const Result = styled.p`
-  font-size: 1.2em;
-  color: #333;
-  margin-top: 0.5em;
+//const Result = styled.p`
+  //font-size: 1.2em;
+  //color: #333;
+  //margin-top: 0.5em;
+//`;
+
+const EntryList = styled.div`
+  margin-top: 2em;
+`;
+
+const EntryItem = styled.div`
+  background-color: #f5f5f5;
+  padding: 1em;
+  margin: 0.5em 0;
+  border-radius: 5px;
 `;
 
 function TimeTracker() {
+  const [entries, setEntries] = useState([]);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [workHours, setWorkHours] = useState(null);
+  const [employer, setEmployer] = useState('A');
   const [error, setError] = useState("");
-  //const [timeEntries, setTimeEntries] = useState([]);
+  const [selectedEntry, setSelectedEntry] = useState(null);
 
-  const calculateTime = () => {
-    const startDate = new Date(startTime);
+  const addStartTime = () => {
+    if (!startTime) {
+      setError("Syötä aloitusaika.");
+      return;
+    }
+
+    const newEntry = {
+      id: Date.now(),
+      employer,
+      startTime,
+      endTime: null
+    };
+
+    setEntries([...entries, newEntry]);
+    setStartTime('');
+    setError('');
+  };
+
+  const addEndTime = () => {
+    if (!selectedEntry) {
+      setError("Valitse työsuoritus listalta.");
+      return;
+    }
+    if (!endTime) {
+      setError("Syötä lopetusaika.");
+      return;
+    }
+
+    const startDate = new Date(selectedEntry.startTime);
     const endDate = new Date(endTime);
 
-    if (!startTime || !endTime || isNaN(startDate) || isNaN(endDate)) {
-      setError("Täytä molemmat ajat.");
-      setWorkHours(null);
+    if (endDate < startDate) {
+      setError("Lopetusaika ei voi olla ennen aloitusaikaa.");
       return;
-    } else {
-      setError("");
     }
 
     const timeDifference = endDate - startDate;
+    const hours = timeDifference / (1000 * 60 * 60);
 
-    if (timeDifference < 0) {
-      setError("Lopetusaika ei voi olla ennen aloitusaikaa.");
-      setWorkHours(null);
-    } else {
-      setError("");
-    }
+    const updatedEntries = entries.map(entry =>
+      entry.id === selectedEntry.id
+        ? { ...entry, endTime, hours: hours.toFixed(2) }
+        : entry
+    );
 
-    // Muutetaan millisekunnit tunneiksi ja minuuteiksi
-    const totalHours = timeDifference / (1000 * 60 * 60);
-    
-    setWorkHours(totalHours.toFixed(2));
-  }
+    setEntries(updatedEntries);
+    setEndTime('');
+    setSelectedEntry(null);
+    setError('');
+  };
+
+  const incompleteEntries = entries.filter(entry => !entry.endTime);
 
   return (
     <Container>
-      <H2>Työajan seuranta:</H2>
+      <H2>Työajan seuranta</H2>
       <TimeEntryContainer>
         <form>
           <label>Valitse työnantaja:
-            <Select name="työnantaja">
+            <Select
+              value={employer}
+              onChange={(e) => setEmployer(e.target.value)}
+            >
               <option value="A">Työnantaja A</option>
               <option value="B">Työnantaja B</option>
             </Select>
           </label>
-          <label>Aloitusaika:
-            <Input 
-              type="datetime-local" 
-              value={startTime}  
-              onChange={(event) => setStartTime(event.target.value)}
-            />
-          </label>
-          <label>Lopetusaika:
-            <Input 
-              type="datetime-local" 
-              value={endTime}  
-              onChange={(event) => setEndTime(event.target.value)}
-            />
-          </label>
-          <Button variant="contained" size="large" onClick={calculateTime} style={{
-            backgroundColor: 'rgb(8, 100, 95)'}}>Lisää tunnit</Button>
+          
+          <div>
+            <label>Aloitusaika:
+              <Input 
+                type="datetime-local" 
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+              />
+            </label>
+            <Button 
+              variant="contained" 
+              size="large" 
+              onClick={addStartTime}
+              style={{ backgroundColor: 'rgb(8, 100, 95)', marginBottom: '1em'}}
+            >Tallenna aloitusaika
+            </Button>
+          </div>
+
+          {incompleteEntries.length > 0 && (
+            <div>
+              <Select
+                value={selectedEntry && selectedEntry.id ? selectedEntry.id : ''}
+                onChange={(e) => setSelectedEntry(entries.find(entry => entry.id === parseInt(e.target.value)))}
+              >
+                <option value="">Valitse keskeneräinen merkintä</option>
+                {incompleteEntries.map(entry => (
+                  <option key={entry.id} value={entry.id}>
+                    {entry.employer} - {new Date(entry.startTime).toLocaleString()}
+                  </option>
+                ))}
+              </Select>
+
+              <label>Lopetusaika:
+                <Input 
+                  type="datetime-local" 
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                />
+              </label>
+              <Button 
+                variant="contained" 
+                size="large" 
+                onClick={addEndTime}
+                style={{ backgroundColor: 'rgb(8, 100, 95)' }}
+              >
+                Tallenna lopetusaika
+              </Button>
+            </div>
+          )}
+          
+          {error && <ErrorMessage>{error}</ErrorMessage>}
         </form>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-        {workHours !== null && !error && <Result>Tunnit lisätty! ({workHours} h)</Result>}
       </TimeEntryContainer>
+
+      <EntryList>
+        <h3>Tallennetut merkinnät:</h3>
+        {entries.map(entry => (
+          <EntryItem key={entry.id}>
+            <p>Työnantaja: {entry.employer}</p>
+            <p>Aloitus: {new Date(entry.startTime).toLocaleString()}</p>
+            {entry.endTime && (
+              <>
+                <p>Lopetus: {new Date(entry.endTime).toLocaleString()}</p>
+                <p>Tunnit: {entry.hours} h</p>
+              </>
+            )}
+          </EntryItem>
+        ))}
+      </EntryList>
     </Container>
   );
 }
 
-
 export default TimeTracker;
-  
