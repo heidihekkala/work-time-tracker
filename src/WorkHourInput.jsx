@@ -1,6 +1,8 @@
 import { useState } from "react";
+import ExportToExcel from "./ExportToExcel";
 import styled from "styled-components";
 import Button from '@mui/material/Button';
+
 
 const Container = styled.div`
   font-family: Arial, sans-serif;
@@ -192,7 +194,7 @@ function TimeTracker() {
                 variant="contained" 
                 size="large" 
                 onClick={addEndTime}
-                style={{ backgroundColor: 'rgb(8, 100, 95)' }}
+                style={{ backgroundColor: 'rgb(8, 100, 95)', marginBottom: '1em' }}
               >
                 Tallenna lopetusaika
               </Button>
@@ -218,6 +220,7 @@ function TimeTracker() {
           </EntryItem>
         ))}
       </EntryList>
+      <ExportToExcel entries={entries} />
     </Container>
   );
 }
