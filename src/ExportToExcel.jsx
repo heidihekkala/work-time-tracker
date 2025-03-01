@@ -37,7 +37,7 @@ const ExportToExcel = ({ entries }) => {
           Päivämäärä: new Date(entry.startTime).toLocaleDateString(),
           Aloitusaika: new Date(entry.startTime).toLocaleTimeString("fi-FI", { hour: "2-digit", minute: "2-digit" }),
           Lopetusaika: entry.endTime ? new Date(entry.endTime).toLocaleTimeString("fi-FI", { hour: "2-digit", minute: "2-digit" }) : "",
-          Tunnit: entry.hours ? entry.hours : "",
+          Tunnit: entry.hours ? parseFloat(entry.hours) : "",
         });
       });
     });
