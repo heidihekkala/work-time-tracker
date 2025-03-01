@@ -18,7 +18,7 @@ const TimeSelect = styled.select`
 
 const DateInput = styled.input`
   padding: 0.75em;
-  font-size: 1em;
+  font-size: 1.2em;
   border-radius: 5px;
   border: 1px solid #ddd;
   margin-right: 5px;
