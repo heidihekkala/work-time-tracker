@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ExportToExcel from "./ExportToExcel";
+import TimeSelector from "./TimeSelector";
 import styled from "styled-components";
 import Button from '@mui/material/Button';
 
@@ -151,16 +152,13 @@ function TimeTracker() {
               <option value="B">Työnantaja B</option>
             </Select>
           </label>
-          
           <div>
-            <label>Aloitusaika:
-              <Input 
-                type="datetime-local" 
-                step="900"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-              />
-            </label>
+            <TimeSelector 
+              value={startTime}
+              onChange={setStartTime}
+              label="Aloitusaika"
+            />
+            
             <Button 
               variant="contained" 
               size="large" 
@@ -184,14 +182,11 @@ function TimeTracker() {
                 ))}
               </Select>
 
-              <label>Lopetusaika:
-                <Input 
-                  type="datetime-local" 
-                  step="900"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                />
-              </label>
+              <TimeSelector 
+                value={endTime}
+                onChange={setEndTime}
+                label="Lopetusaika"
+              />
               <Button 
                 variant="contained" 
                 size="large" 
