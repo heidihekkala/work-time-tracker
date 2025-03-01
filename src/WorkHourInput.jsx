@@ -156,6 +156,7 @@ function TimeTracker() {
             <label>Aloitusaika:
               <Input 
                 type="datetime-local" 
+                step="900"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
               />
@@ -186,6 +187,7 @@ function TimeTracker() {
               <label>Lopetusaika:
                 <Input 
                   type="datetime-local" 
+                  step="900"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
                 />
