@@ -24,7 +24,6 @@ const DateInput = styled.input`
   margin-right: 5px;
 `;
 
-// Apufunktio päivämäärän formatointiin
 function formatDate(date) {
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -33,22 +32,25 @@ function formatDate(date) {
 }
 
 const TimeSelector = ({ value, onChange, label }) => {
-  // Parsitaan arvo tai käytetään nykyistä aikaa
   const now = new Date();
   const dateValue = value ? new Date(value) : now;
-  
-  // Erilliset tilat päivälle, tunnille ja minuutille
-  const [date, setDate] = useState(value ? value.split("T")[0] : formatDate(dateValue));
-  const [hour, setHour] = useState(
-    value ? dateValue.getHours().toString().padStart(2, "0") : 
-    dateValue.getHours().toString().padStart(2, "0")
-  );
-  const [minute, setMinute] = useState(
-    value ? (Math.floor(dateValue.getMinutes() / 15) * 15).toString().padStart(2, "0") : 
-    (Math.floor(dateValue.getMinutes() / 15) * 15).toString().padStart(2, "0")
-  );
 
-  // Päivitetään arvo kun jokin kentistä muuttuu
+  // Tila päivämäärälle, tunnille ja minuutille
+  const [date, setDate] = useState(formatDate(dateValue));
+  const [hour, setHour] = useState(dateValue.getHours().toString().padStart(2, "0"));
+  const [minute, setMinute] = useState((Math.floor(dateValue.getMinutes() / 15) * 15).toString().padStart(2, "0"));
+
+  // **TÄRKEÄ MUUTOS:** Kun `value` muuttuu, päivitetään tilat
+  useEffect(() => {
+    if (value) {
+      const newDate = new Date(value);
+      setDate(formatDate(newDate));
+      setHour(newDate.getHours().toString().padStart(2, "0"));
+      setMinute((Math.floor(newDate.getMinutes() / 15) * 15).toString().padStart(2, "0"));
+    }
+  }, [value]);
+
+  // Päivitetään arvo, kun jokin kentistä muuttuu
   useEffect(() => {
     if (date) {
       const newValue = `${date}T${hour}:${minute}:00`;
@@ -56,37 +58,23 @@ const TimeSelector = ({ value, onChange, label }) => {
     }
   }, [date, hour, minute, onChange]);
 
-  // Generoidaan tunnit (0-23)
-  const hours = [];
-  for (let i = 0; i < 24; i++) {
-    hours.push(i.toString().padStart(2, "0"));
-  }
-
-  // Minuutit 15 min välein (0, 15, 30, 45)
+  const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, "0"));
   const minutes = ["00", "15", "30", "45"];
-  
+
   return (
     <div>
       <label>{label}:
         <TimeSelectContainer>
-          <DateInput
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
+          <DateInput type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           <TimeSelect value={hour} onChange={(e) => setHour(e.target.value)}>
             {hours.map((h) => (
-              <option key={h} value={h}>
-                {h}
-              </option>
+              <option key={h} value={h}>{h}</option>
             ))}
           </TimeSelect>
           :
           <TimeSelect value={minute} onChange={(e) => setMinute(e.target.value)}>
             {minutes.map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
+              <option key={m} value={m}>{m}</option>
             ))}
           </TimeSelect>
         </TimeSelectContainer>

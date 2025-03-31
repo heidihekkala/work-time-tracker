@@ -171,16 +171,29 @@ function TimeTracker() {
           {incompleteEntries.length > 0 && (
             <div>
               <Select
-                value={selectedEntry && selectedEntry.id ? selectedEntry.id : ''}
-                onChange={(e) => setSelectedEntry(entries.find(entry => entry.id === parseInt(e.target.value)))}
-              >
-                <option value="">Valitse keskeneräinen merkintä</option>
-                {incompleteEntries.map(entry => (
-                  <option key={entry.id} value={entry.id}>
-                    {entry.employer} - {new Date(entry.startTime).toLocaleString()}
-                  </option>
-                ))}
-              </Select>
+  value={selectedEntry && selectedEntry.id ? selectedEntry.id : ''}
+  onChange={(e) => {
+    const selected = entries.find(entry => entry.id === parseInt(e.target.value));
+    setSelectedEntry(selected);
+
+    if (selected) {
+      const startDate = new Date(selected.startTime);
+      
+      // Asetetaan lopetusajaksi aloitusajan päivämäärä ja sama kellonaika
+      const formattedDate = startDate.toISOString().slice(0, 16); // 'YYYY-MM-DDTHH:MM'
+      
+      setEndTime(formattedDate);
+    }
+  }}
+>
+  <option value="">Valitse keskeneräinen merkintä</option>
+  {incompleteEntries.map(entry => (
+    <option key={entry.id} value={entry.id}>
+      {entry.employer} - {new Date(entry.startTime).toLocaleString()}
+    </option>
+  ))}
+</Select>
+
 
               <TimeSelector 
                 value={endTime}
